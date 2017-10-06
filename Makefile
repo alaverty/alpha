@@ -35,7 +35,7 @@ build:
 .PHONY: run
 run:
 	$(info Now Running: ${PROJECT_DOCKER_STRING} )
-	docker run -p 5000:5000 ${PROJECT_DOCKER_STRING}
+	docker run -p 5000:5000 -v $(CURDIR)/app:/opt/app ${PROJECT_DOCKER_STRING}
 
 .PHONY: push
 push:

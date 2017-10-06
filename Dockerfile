@@ -25,6 +25,6 @@ RUN pip install --upgrade pip && \
 
 WORKDIR /opt/app
 
-CMD ["FLASK_APP=app.py","FLASK_DEBUG=1","flask","run"]
+CMD FLASK_APP=/opt/app/app.py FLASK_DEBUG=1 flask run --host=0.0.0.0
 
 EXPOSE 5000
