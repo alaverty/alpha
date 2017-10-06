@@ -1,0 +1,30 @@
+Vagrant.configure(2) do |config|
+
+  # If virtualbox guest additions plugin exists disable auto-updates
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = false
+  end
+
+  config.vm.box = "ubuntu/xenial64"
+  #config.vm.box_url = "http://artifactory.dev.cba/artifactory/cep/packer/centos67-nocm-0.1.0.box"
+
+  config.vm.provider "virtualbox" do |v|
+    v.cpus = 2
+    v.memory = 4096
+    #v.gui = true
+  end
+
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.provision "shell", path: "vagrant_scripts/base.sh"
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "v"
+    ansible.playbook = "site.yml"
+    ansible.groups = {
+      "docker" => ["default"]
+    }
+    ansible.extra_vars = {
+      base_dir: "/data",
+      cadvisor_enabled: true
+    }
+  end
+end
