@@ -14,7 +14,7 @@ APP_VERSION = $(shell perl -ne '/$(VERSION_REGEX)/ && print $$1' $(VERSION_FILE)
 PROJECT_CONTAINER_NAME = $(PROJECT_NAME)
 PROJECT_IMAGE_NAME = $(REGISTRY)/$(PROJECT_NAME)
 
-PROJECT_DOCKER_STRING = "$(PROJECT_IMAGE_NAME):$(APP_VERSION)"
+PROJECT_DOCKER_STRING = $(PROJECT_IMAGE_NAME):$(APP_VERSION)
 
 # Compatability to run docker-tag pre and post docker 1.12.x
 DOCKER_VERSION=$(shell docker version --format '{{.Server.Version}}' | cut -d"." -f1-2)
@@ -32,6 +32,10 @@ build:
 	docker build -t ${PROJECT_DOCKER_STRING} -f ./Dockerfile .
 	docker $(CMD_DOCKER_TAG) ${PROJECT_DOCKER_STRING} $(PROJECT_IMAGE_NAME):latest
 
+.PHONY: run
+run:
+	$(info Now Running: ${PROJECT_DOCKER_STRING} )
+	docker run -p 5000:5000 ${PROJECT_DOCKER_STRING}
 
 .PHONY: push
 push:

@@ -25,6 +25,6 @@ RUN pip install --upgrade pip && \
 
 WORKDIR /opt/app
 
-CMD ["gunicorn","--bind","0.0.0.0:8080","wsgi"]
+CMD ["FLASK_APP=app.py","FLASK_DEBUG=1","flask","run"]
 
-EXPOSE 8080
+EXPOSE 5000
