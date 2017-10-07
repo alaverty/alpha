@@ -1,1 +1,7 @@
 .idea
+.vagrant
+tests/group_vars
+tests/inventory
+tests/roles
+tests/site.*
+tests/*.log

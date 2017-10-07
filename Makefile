@@ -47,6 +47,7 @@ push:
 .PHONY: create_links
 create_links: _clean_links
 	@ln -sf $(CURDIR)/roles $(CURDIR)/tests/roles
+	@ln -sf $(CURDIR)/inventory $(CURDIR)/tests/inventory
 	@ln -sf $(CURDIR)/group_vars $(CURDIR)/tests/group_vars
 	@ln -sf $(CURDIR)/site.yml $(CURDIR)/tests/site.yml
 
@@ -60,11 +61,11 @@ vagrant-provision-vm:
 
 .PHONY: vagrant-provision
 vagrant-provision:
-	make vagrant-provision-vm vm=dns
+	make vagrant-provision-vm vm=default
 
 .PHONY: test
 test: vagrant-up vagrant-provision
-	@cd tests && vagrant provision --provision-with test slb
+	@cd tests && vagrant provision --provision-with shell,ansible default
 
 .PHONY: prepare
 prepare: create_links
@@ -72,3 +73,46 @@ prepare: create_links
 .PHONY: ssh
 ssh:
 	@cd tests && vagrant ssh ${vm} -c "sudo -i"
+
+
+
+### Clean Tasks
+
+.PHONY: _vagrant_clean
+_vagrant_clean:
+	@cd tests && vagrant destroy -f && rm -rf .vagrant && rm -rf .ip-info
+
+.PHONY: _clean_setenv
+_clean_setenv:
+	@rm -f setenv.cfg setenv.yml
+
+.PHONY: _clean_bin
+_clean_bin:
+	@rm -rf bin
+
+.PHONY: _clean_group_vars
+_clean_group_vars:
+	@rm -rf group_vars
+
+.PHONY: _clean_roles
+_clean_roles:
+	@rm -rf $(CURDIR)/roles
+
+.PHONY: _ansible_clean
+_ansible_clean:
+	@rm -f $(CURDIR)/inventory
+	@rm -f *.retry tests/*.retry
+
+.PHONY: _clean_tox
+_clean_tox:
+	@rm -rf .tox
+
+.PHONY: _clean_links
+_clean_links:
+	@rm -f $(CURDIR)/tests/roles
+	@rm -f $(CURDIR)/tests/group_vars
+	@rm -f $(CURDIR)/tests/site.yml
+	@rm -f $(CURDIR)/tests/inventory
+
+.PHONY: clean
+clean: _vagrant_clean _clean_links

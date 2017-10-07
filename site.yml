@@ -1,0 +1,15 @@
+---
+# TODO
+# 1. include tests
+#   1. DNA-1918
+
+- name: Deploy Docker
+  hosts: nodes
+  become: true
+  roles:
+    - role: common
+      tags:
+        - common
+    - role: docker
+      tags:
+        - docker

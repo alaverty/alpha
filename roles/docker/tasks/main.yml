@@ -1,0 +1,37 @@
+
+- name: Install Docker Dependencies
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+
+- name: Import the download.docker.com GPG key into apt
+  apt_key:
+    id: 0EBFCD88
+    url: https://download.docker.com/linux/ubuntu/gpg
+    validate_certs: no
+  tags:
+    - apt
+
+- apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+    state: present
+  tags:
+    - apt
+
+- name: Update all packages to the latest version
+  apt:
+    upgrade: dist
+  tags:
+    - apt
+
+- name: Install Docker Dependencies
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker-ce
